@@ -1,5 +1,8 @@
 # Graph Elimination Networks
-A graph neural network that improves the algorithm’s performance in capturing long-range node dependencies by eliminating redundancy in propagation. This project is the official implementation of 
+A graph neural network that improves the algorithm’s performance in capturing long-range node dependencies by eliminating redundancy in propagation. This project is the official implementation of the paper "Graph Elimination Networks".
+
+![image](./fig/GENs.png)
+
 ## Installation
 * Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
 * Alternatively, install the above and the packages listed in [requirements.txt](requirements.txt)
