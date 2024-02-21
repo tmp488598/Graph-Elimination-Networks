@@ -1,5 +1,7 @@
 # Graph Elimination Networks
-A graph neural network that improves the algorithm’s performance in capturing long-range node dependencies by eliminating redundancy in propagation. This project is the official implementation of 
+A graph neural network that improves the algorithm’s performance in capturing long-range node dependencies by eliminating redundancy in propagation. This project is the official implementation of the paper "Graph Elimination Networks".
+
+![image](./fig/review.png)
 ## Installation
 * Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
 * Alternatively, install the above and the packages listed in [requirements.txt](requirements.txt)
@@ -20,6 +22,10 @@ python main.py
 
 # OGB
 cd ./ogb/arxiv
+python gnn.py
+
+# ZINC
+cd ./pyg_dataset/zinc
 python gnn.py
 ```
 The default configs are not always optimal, but they can usually reproduce the results in our paper by adjusting the dropout or the K value in the model. Some datasets require special processing methods (such as using degree as node features, or adding edge features to node features), which are adopted from the baseline methods and are essential steps.
