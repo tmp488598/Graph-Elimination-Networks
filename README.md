@@ -2,6 +2,8 @@
 A graph neural network that improves the algorithm’s performance in capturing long-range node dependencies by eliminating redundancy in propagation. This project is the official implementation of the paper "Graph Elimination Networks".
 
 ![image](./fig/review.png)
+
+
 ## Installation
 * Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
 * Alternatively, install the above and the packages listed in [requirements.txt](requirements.txt)
@@ -29,3 +31,12 @@ cd ./pyg_dataset/zinc
 python gnn.py
 ```
 The default configs are not always optimal, but they can usually reproduce the results in our paper by adjusting the dropout or the K value in the model. Some datasets require special processing methods (such as using degree as node features, or adding edge features to node features), which are adopted from the baseline methods and are essential steps.
+
+#### ZINC-500K
+Method        | #params | test MAE   |
+--------------|---------|------------|
+GCN          | 0.256M  | 0.1846±0.0353      |
+GAT          | 2.223M  | 0.1576±0.0501|
+Graphormer-Slim   | 0.489M  | 0.122 |
+GENs(SubG) | 0.499M  | **0.0703 ± 0.0206** |
+

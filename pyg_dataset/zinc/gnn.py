@@ -8,6 +8,11 @@ from torch_geometric.nn import GCNConv, GATConv
 from torch_geometric.nn import global_mean_pool, global_add_pool
 from models import GENsConv
 import argparse
+from torch.utils.data.distributed import DistributedSampler
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.distributed import init_process_group, destroy_process_group
+import os
+
 
 def model_structure(model):
     blank = ' '
@@ -41,8 +46,9 @@ def model_structure(model):
 
 class MLP(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels, num_layers,
-                 dropout=0):
+                 dropout=0, bn_bool = True):
         super(MLP, self).__init__()
+        self.bn_bool = bn_bool
 
         self.lins = torch.nn.ModuleList()
         self.bns = torch.nn.ModuleList()
@@ -65,7 +71,7 @@ class MLP(torch.nn.Module):
 
         for i, lin in enumerate(self.lins[:-1]):
             x = lin(x)
-            x = self.bns[i](x)
+            x = self.bns[i](x) if self.bn_bool else x
             x = F.relu(x)
             x = F.dropout(x, p=self.dropout, training=self.training)
         x = self.lins[-1](x)
@@ -82,9 +88,10 @@ class GNN(torch.nn.Module):
         self.global_pool = global_mean_pool if args.global_pool =='mean' else global_add_pool
 
         self.node_embedding = torch.nn.Embedding(30, hidden_channels)
-        self.edge_embedding = torch.nn.Embedding(4, hidden_channels)
 
         self.emb_convs = MLP(hidden_channels, hidden_channels, hidden_channels, 2)
+        self.bns_start = torch.nn.BatchNorm1d(hidden_channels)
+        self.bns_end = torch.nn.BatchNorm1d(hidden_channels)
         if self.cat:
             self.out_convs = MLP(hidden_channels*(num_layers+1), hidden_channels, 1, 2)
         else:
@@ -93,34 +100,38 @@ class GNN(torch.nn.Module):
 
         GNNConv = GENsConv
         self.convs = torch.nn.ModuleList()
-        self.bns = torch.nn.ModuleList()
+        # self.bns = torch.nn.ModuleList()
+
+
         for _ in range(num_layers):
-            self.convs.append(GNNConv(hidden_channels, hidden_channels, edge_dim=hidden_channels, heads=2, concat=False))
-            self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
-        self.convs.append(GNNConv(hidden_channels, 1))
+            self.convs.append(GNNConv(hidden_channels, int(hidden_channels/4), edge_dim=hidden_channels, heads=4, concat=True))
+            # self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
+        # self.convs.append(GNNConv(hidden_channels, 1))
 
     def reset_parameters(self):
         self.node_embedding.reset_parameters()
-        self.edge_embedding.reset_parameters()
+        # self.edge_embedding.reset_parameters()
         self.emb_convs.reset_parameters()
         self.out_convs.reset_parameters()
+        self.bns_start.reset_parameters()
+        self.bns_end.reset_parameters()
         for conv in self.convs:
             conv.reset_parameters()
-        for bn in self.bns:
-            bn.reset_parameters()
+        # for bn in self.bns:
+        #     bn.reset_parameters()
 
     def forward(self, data):
         x, adj_t, edge_attr, batch = data.x.reshape(-1), data.edge_index, data.edge_attr, data.batch
         x = self.node_embedding(x)
         edge_attr = self.node_embedding(edge_attr)
         x = self.emb_convs(x)
-        x = self.bns[0](x)
+        x = self.bns_start(x)
         x = F.relu(x) #1,0
 
         xs = [x]
-        for i, conv in enumerate(self.convs[:-1]):
+        for i, conv in enumerate(self.convs):
             x = conv(xs[-1], adj_t, edge_attr=edge_attr)
-            #x = self.bns[i](x)
+            # x = self.bns[i](x)
             x = F.relu(x)
             x = F.dropout(x, p=self.dropout, training=self.training)
             x = (1-self.initial_res)*x+self.initial_res*xs[0]
@@ -129,7 +140,7 @@ class GNN(torch.nn.Module):
 
         # x = self.convs[-1](x,adj_t)
         x = self.global_pool(x, batch)
-
+        x = self.bns_end(x)
         x = self.out_convs(x)
         return x.reshape(-1)
 
@@ -162,46 +173,58 @@ def test(model, device, loader, criterion):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--CUDA_LAUNCH_BLOCKING', type=str, default="0")
+    # parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--cat', type=bool, default=False)
     parser.add_argument('--initial_res', type=float, default=0.0)
     parser.add_argument('--runs', type=int, default=5)
-    parser.add_argument('--epoch', type=int, default=300)
+    parser.add_argument('--epoch', type=int, default=400)
     parser.add_argument('--log_steps', type=int, default=20)
-    parser.add_argument('--hidden_channels', type=int, default=192)
-    parser.add_argument('--num_layers', type=int, default=12)
+    parser.add_argument('--hidden_channels', type=int, default=96)
+    parser.add_argument('--num_layers', type=int, default=10)
     parser.add_argument('--lr', type=float, default=0.0005)
     parser.add_argument('--dropout', type=float, default=0.0)
     parser.add_argument('--global_pool', type=str, default='add')
     args = parser.parse_args()
     print(args)
 
-    device = torch.device('cuda:'+args.CUDA_LAUNCH_BLOCKING if torch.cuda.is_available() else 'cpu')
+    local_rank = int(os.environ["LOCAL_RANK"])
+    init_process_group(backend="nccl")
+    torch.cuda.set_device(local_rank)
 
     dataset = ZINC(root='data/ZINC', split='train')
     test_dataset = ZINC(root='data/ZINC', split='test')
 
-    train_loader = DataLoader(dataset, batch_size=2048, num_workers=24, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=2048, num_workers=24, shuffle=False)
+    train_sampler = DistributedSampler(dataset)
+    test_sampler = DistributedSampler(test_dataset, shuffle=False)
+
+    train_loader = DataLoader(dataset, batch_size=2048, sampler=train_sampler, num_workers=24)
+    test_loader = DataLoader(test_dataset, batch_size=2048, sampler=test_sampler, num_workers=24)
     criterion = torch.nn.MSELoss()
-    model = GNN(args).to(device)
-    model_structure(model)
+    model = GNN(args).to(local_rank)
+    model = DDP(model, device_ids=[local_rank])
+    if local_rank==0:
+        model_structure(model)
     logger = Logger(args.runs, args)
 
     for run in range(args.runs):
-        model.reset_parameters()
+
+        model.module.reset_parameters()
         optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
         for epoch in range(1, args.epoch):
-            train_loss = train(model,device,train_loader,optimizer)
-            test_loss = test(model, device, test_loader, criterion)
-            logger.add_result(run, [train_loss, test_loss])
+            train_loader.sampler.set_epoch(epoch)
+            train_loss = train(model,local_rank,train_loader,optimizer)
+            if local_rank==0:
+                test_loss = test(model, local_rank, test_loader, criterion)
+                logger.add_result(run, [train_loss, test_loss])
+                if epoch%args.log_steps==0:
+                    print(f'Run: {run + 1:02d}, Epoch: {epoch:02d}, Train Loss: {train_loss:.4f}, Test Loss: {test_loss:.4f}')
+        if local_rank == 0:
+            logger.print_statistics(run)
+    if local_rank == 0:
+        logger.print_statistics()
 
-            if epoch%args.log_steps==0:
-                print(f'Run: {run + 1:02d}, Epoch: {epoch:02d}, Train Loss: {train_loss:.4f}, Test Loss: {test_loss:.4f}')
-
-        logger.print_statistics(run)
-    logger.print_statistics()
+    destroy_process_group()
 
 
 class Logger(object):

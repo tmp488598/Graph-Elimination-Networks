@@ -3,7 +3,8 @@ import torch.nn.functional as F
 from torch_geometric.utils import remove_self_loops, add_self_loops
 from torch_geometric.nn.conv import MessagePassing
 from torch_geometric.nn.dense.linear import Linear
-from torch_geometric.utils import add_remaining_self_loops, scatter
+from torch_scatter import scatter_add
+from torch_geometric.utils import add_remaining_self_loops
 from typing import Optional, Tuple
 from torch import Tensor
 from torch.nn import Parameter
@@ -33,7 +34,7 @@ def gen_norm(edge_index, edge_weight=None, num_nodes=None, improved=False,
             edge_weight = tmp_edge_weight
 
         row, col = edge_index[0], edge_index[1]
-        deg = scatter(edge_weight, col, dim=0, dim_size=num_nodes, reduce='sum') + 1
+        deg = scatter_add(edge_weight, col, dim=0, dim_size=num_nodes) + 1
         deg_inv_sqrt = deg.pow(-0.5)
         deg_inv_sqrt.masked_fill_(deg_inv_sqrt == float('inf'), 0)
         return edge_index, deg_inv_sqrt[row] * edge_weight * deg_inv_sqrt[col], deg
@@ -60,7 +61,7 @@ class GENsConv(MessagePassing):
 
     def __init__(self, in_channels: int, out_channels: int,
                  improved: bool = False, cached: bool = False,
-                 normalize: bool = True, K: int = 4, gamma: float = 0.8,
+                 normalize: bool = True, K: int = 2, gamma: float = 0.8,
                  fea_drop: bool = 'simple', hop_att: bool = True,
                  heads: int = 2, base_model: str = 'gat', negative_slope=0.2,
                  edge_dim=None, concat=False, dropout=0, **kwargs):
@@ -90,8 +91,8 @@ class GENsConv(MessagePassing):
         self.lin_2 = Linear(in_channels, out_channels, weight_initializer='glorot')
 
         if self.hop_att:
-            self.q = torch.nn.Linear(in_channels, self.heads * out_channels)
-            self.k = torch.nn.Linear(in_channels, self.heads * out_channels)
+            self.q = torch.nn.Linear(in_channels, self.heads * out_channels, bias=False)
+            self.k = torch.nn.Linear(in_channels, self.heads * out_channels, bias=False)
             self.lin = Linear(in_channels, self.heads * out_channels, weight_initializer='glorot')
             if self.concat:
                 self.lin_2 = Linear(in_channels, out_channels * heads, weight_initializer='glorot')

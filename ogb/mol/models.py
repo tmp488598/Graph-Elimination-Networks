@@ -358,8 +358,8 @@ class GENsConv(MessagePassing):
         self.lin_2 = Linear(in_channels, out_channels, weight_initializer='glorot')
 
         if self.hop_att:
-            self.q = torch.nn.Linear(in_channels, self.heads * out_channels)
-            self.k = torch.nn.Linear(in_channels, self.heads * out_channels)
+            self.q = torch.nn.Linear(in_channels, self.heads * out_channels, bias=False)
+            self.k = torch.nn.Linear(in_channels, self.heads * out_channels, bias=False)
             self.lin = Linear(in_channels, self.heads * out_channels, weight_initializer='glorot')
             if self.concat:
                 self.lin_2 = Linear(in_channels, out_channels * heads, weight_initializer='glorot')

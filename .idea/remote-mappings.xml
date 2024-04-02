@@ -10,6 +10,13 @@
             </list>
           </settings>
         </remote-mappings>
+        <remote-mappings server-id="python@sftp://ailaw@172.16.48.189:22/home/ailaw/anaconda3/envs/GraphCL/bin/python3.8">
+          <settings>
+            <list>
+              <mapping local-root="$PROJECT_DIR$" remote-root="/home/ailaw/disk/wangshuo/method" />
+            </list>
+          </settings>
+        </remote-mappings>
       </list>
     </list>
   </component>
