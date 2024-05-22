@@ -90,7 +90,7 @@ class GNN(torch.nn.Module):
         self.node_embedding = torch.nn.Embedding(30, hidden_channels)
 
         self.emb_convs = MLP(hidden_channels, hidden_channels, hidden_channels, 2)
-        self.bns_start = torch.nn.BatchNorm1d(hidden_channels)
+        # self.bns_start = torch.nn.BatchNorm1d(hidden_channels)
         self.bns_end = torch.nn.BatchNorm1d(hidden_channels)
         if self.cat:
             self.out_convs = MLP(hidden_channels*(num_layers+1), hidden_channels, 1, 2)
@@ -100,12 +100,12 @@ class GNN(torch.nn.Module):
 
         GNNConv = GENsConv
         self.convs = torch.nn.ModuleList()
-        # self.bns = torch.nn.ModuleList()
+        self.bns = torch.nn.ModuleList()
 
 
         for _ in range(num_layers):
             self.convs.append(GNNConv(hidden_channels, int(hidden_channels/4), edge_dim=hidden_channels, heads=4, concat=True))
-            # self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
+            self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
         # self.convs.append(GNNConv(hidden_channels, 1))
 
     def reset_parameters(self):
@@ -113,25 +113,25 @@ class GNN(torch.nn.Module):
         # self.edge_embedding.reset_parameters()
         self.emb_convs.reset_parameters()
         self.out_convs.reset_parameters()
-        self.bns_start.reset_parameters()
+        # self.bns_start.reset_parameters()
         self.bns_end.reset_parameters()
         for conv in self.convs:
             conv.reset_parameters()
-        # for bn in self.bns:
-        #     bn.reset_parameters()
+        for bn in self.bns:
+            bn.reset_parameters()
 
     def forward(self, data):
         x, adj_t, edge_attr, batch = data.x.reshape(-1), data.edge_index, data.edge_attr, data.batch
         x = self.node_embedding(x)
         edge_attr = self.node_embedding(edge_attr)
         x = self.emb_convs(x)
-        x = self.bns_start(x)
-        x = F.relu(x) #1,0
+        # x = self.bns_start(x)
+        # x = F.relu(x) #1,0
 
         xs = [x]
         for i, conv in enumerate(self.convs):
             x = conv(xs[-1], adj_t, edge_attr=edge_attr)
-            # x = self.bns[i](x)
+            x = self.bns[i](x)
             x = F.relu(x)
             x = F.dropout(x, p=self.dropout, training=self.training)
             x = (1-self.initial_res)*x+self.initial_res*xs[0]
@@ -176,13 +176,13 @@ def main():
     # parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--cat', type=bool, default=False)
     parser.add_argument('--initial_res', type=float, default=0.0)
-    parser.add_argument('--runs', type=int, default=5)
+    parser.add_argument('--runs', type=int, default=10)
     parser.add_argument('--epoch', type=int, default=400)
     parser.add_argument('--log_steps', type=int, default=20)
-    parser.add_argument('--hidden_channels', type=int, default=96)
-    parser.add_argument('--num_layers', type=int, default=10)
-    parser.add_argument('--lr', type=float, default=0.0005)
-    parser.add_argument('--dropout', type=float, default=0.0)
+    parser.add_argument('--hidden_channels', type=int, default=100)
+    parser.add_argument('--num_layers', type=int, default=9)
+    parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--dropout', type=float, default=0.015)
     parser.add_argument('--global_pool', type=str, default='add')
     args = parser.parse_args()
     print(args)
@@ -195,10 +195,10 @@ def main():
     test_dataset = ZINC(root='data/ZINC', split='test')
 
     train_sampler = DistributedSampler(dataset)
-    test_sampler = DistributedSampler(test_dataset, shuffle=False)
+    # test_sampler = DistributedSampler(test_dataset, shuffle=False)
 
     train_loader = DataLoader(dataset, batch_size=2048, sampler=train_sampler, num_workers=24)
-    test_loader = DataLoader(test_dataset, batch_size=2048, sampler=test_sampler, num_workers=24)
+    test_loader = DataLoader(test_dataset, batch_size=2048,  shuffle=False, num_workers=24)
     criterion = torch.nn.MSELoss()
     model = GNN(args).to(local_rank)
     model = DDP(model, device_ids=[local_rank])

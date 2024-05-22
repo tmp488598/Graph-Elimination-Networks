@@ -21,7 +21,7 @@ class GNN(torch.nn.Module):
         self.bns = torch.nn.ModuleList()
         
         for _ in range(num_layers):
-            self.convs.append(GENsConv(in_channels, hidden_channels, hop_att = True, base_model = 'gat'))
+            self.convs.append(GENsConv(in_channels, hidden_channels))
             self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
             in_channels = hidden_channels
 
@@ -83,9 +83,9 @@ def main():
     parser.add_argument('--device', type=int, default=0)
     parser.add_argument('--log_steps', type=int, default=20)
     parser.add_argument('--use_sage', action='store_true')
-    parser.add_argument('--num_layers', type=int, default=3)
-    parser.add_argument('--hidden_channels', type=int, default=256)
-    parser.add_argument('--dropout', type=float, default=0.5)
+    parser.add_argument('--num_layers', type=int, default=4)
+    parser.add_argument('--hidden_channels', type=int, default=128)
+    parser.add_argument('--dropout', type=float, default=0.2)
     parser.add_argument('--lr', type=float, default=0.005)
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--runs', type=int, default=10)

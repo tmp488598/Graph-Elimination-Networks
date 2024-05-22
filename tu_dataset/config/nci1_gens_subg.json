@@ -1,0 +1,54 @@
+{
+    "dataset": "NCI1",
+    "out_dir": "./results/GENs/",
+    "eval_mad": false,
+
+    "feature_params": {
+        "degree": true,
+        "onehot_maxdeg": 10,
+        "AK": 1,
+        "centrality": false,
+        "remove_edges": "none",
+        "edge_noises_add": 0,
+        "edge_noises_delete": 0,
+        "group_degree": 0,
+        "virtual_node": false
+    },
+
+    "params": {
+        "gpu": 1,
+        "seed": 41,
+        "net": "GNN",
+        "epoch_select": "test_max",
+        "with_eval_mode": true,
+        "data_root": "datasets",
+        "epochs": 100,
+        "batch_size": 128,
+        "lr": 0.0005,
+        "scheduler": false,
+        "weight_decay": 5e-4
+    },
+
+    "net_params": {
+        "gnn_type": "gens",
+        "num_layers": 6,
+        "num_fc": 1,
+        "hidden_dim": 128,
+        "node_encoder": 1,
+        "residual": false,
+        "global_pool": "sum",
+        "dropout": 0.0,
+        "batch_norm": true,
+        "concat": false,
+        "sum_x": false,
+        "gens_K":2,
+        "gens_gamma":1,
+        "gens_fea_drop": "normal",
+        "gens_hop_att":false,
+        "gens_heads":1,
+        "gens_base_model":"gat",
+        "gens_edge_dim":-1,
+        "gens_att_dropout":0,
+        "gens_att_concat":false
+    }
+}

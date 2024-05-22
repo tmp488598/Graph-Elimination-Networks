@@ -326,9 +326,9 @@ class GENsConv(MessagePassing):
     '''
     def __init__(self, in_channels: int, out_channels: int,
                  improved: bool = False, cached: bool = False,
-                 normalize: bool = True, K: int = 4, gamma: float = 0.75,
+                 normalize: bool = True, K: int = 8, gamma: float = 0.85,
                  fea_drop: bool = 'simple', hop_att: bool = False,
-                 heads: int = 2, base_model: str = 'gcn', negative_slope = 0.2,
+                 heads: int = 1, base_model: str = 'gcn', negative_slope = 0.2,
                  edge_dim=None, concat=False, dropout=0, **kwargs):
 
 

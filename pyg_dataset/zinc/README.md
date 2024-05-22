@@ -8,7 +8,7 @@ To train GENs(SubG) on ZINC dataset:
 #### ZINC-500K
 Method        | #params | test MAE   |
 --------------|---------|------------|
-GCN          | 0.256M  | 0.1846 Â± 0.0353      |
-GAT          | 2.223M  | 0.1576 Â± 0.0501|
+GCN          | 0.256M  | 0.1846 ¡À 0.0353      |
+GAT          | 2.223M  | 0.1576 ¡À 0.0501|
 Graphormer-Slim   | 0.489M  | 0.122 |
-GENs(SubG) | 0.499M  | **0.0703 Â± 0.0206** |
+GENs(SubG) | 0.492M  | **0.0692 ¡À 0.0084** |

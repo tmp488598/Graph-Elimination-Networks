@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="7a34670a-63b1-4f18-8437-2773a507ef79" name="nlp@48.187_method">
+        <fileTransfer rootFolder="/home/nlp/workdist/wangshuo/method" accessType="SFTP" host="172.16.48.167" port="22" sshConfigId="5352df60-a57b-44eb-9a5f-15e4f1cef66b" sshConfig="nlp@172.16.48.167:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="681f6a14-b9f9-43fd-b1ab-b47054eee6c9" name="gnn">
+        <fileTransfer rootFolder="/home/ailaw/disk/wangshuo/method" accessType="SFTP" host="172.16.48.168" port="22" sshConfigId="de3c6ddf-511b-453f-859a-cca1c23e297e" sshConfig="ailaw@172.16.48.168:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

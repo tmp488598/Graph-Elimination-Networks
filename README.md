@@ -35,8 +35,8 @@ The default configs are not always optimal, but they can usually reproduce the r
 #### ZINC-500K
 Method        | #params | test MAE   |
 --------------|---------|------------|
-GCN          | 0.256M  | 0.1846±0.0353      |
-GAT          | 2.223M  | 0.1576±0.0501|
+GCN          | 0.256M  | 0.1846 ± 0.0353      |
+GAT          | 0.492M  | 0.1576 ± 0.0501|
 Graphormer-Slim   | 0.489M  | 0.122 |
-GENs(SubG) | 0.499M  | **0.0703 ± 0.0206** |
+GENs(SubG) | 0.492M  | **0.0692 ± 0.0084** |
 

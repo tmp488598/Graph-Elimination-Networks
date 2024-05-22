@@ -21,18 +21,18 @@ class FeatureExpander(MessagePassing):
         group_degree (int): group nodes to create super nodes, set 0 to disable.
     """
 
-    def __init__(self, degree=True, onehot_maxdeg=0, AK=1,
-                 centrality=False, remove_edges="none",
-                 edge_noises_add=0, edge_noises_delete=0, group_degree=0):
+    def __init__(self, params):
         super(FeatureExpander, self).__init__()
-        self.degree = degree
-        self.onehot_maxdeg = onehot_maxdeg
-        self.AK = AK
-        self.centrality = centrality
-        self.remove_edges = remove_edges
-        self.edge_noises_add = edge_noises_add
-        self.edge_noises_delete = edge_noises_delete
-        self.group_degree = group_degree
+        self.degree = params['degree']
+        self.onehot_maxdeg = params['onehot_maxdeg']
+        self.AK = params['AK']
+        self.centrality = params['centrality']
+        self.remove_edges = params['remove_edges']
+        self.edge_noises_add = params['edge_noises_add']
+        self.edge_noises_delete = params['edge_noises_delete']
+        self.group_degree = params['group_degree']
+        self.virtual_node = params['virtual_node']
+        remove_edges = params['remove_edges']
         assert remove_edges in ["none", "nonself", "all"], remove_edges
 
         self.edge_norm_diag = 1e-8  # edge norm is used, and set A diag to it
@@ -65,6 +65,41 @@ class FeatureExpander(MessagePassing):
                 self_edge = torch.tensor(range(data.num_nodes)).view((1, -1))
                 self_edge = torch.cat([self_edge, self_edge], 0)
             data.edge_index = self_edge
+
+        if self.virtual_node:
+            node_feature_dim = data.x.shape[1]
+            virtual_node_features = torch.zeros(1, node_feature_dim)
+
+            data.x = torch.cat([data.x, virtual_node_features], dim=0)
+
+            num_nodes = data.x.shape[0]
+            if data.edge_attr is not None:
+                virtual_edge_attrs = []
+                for node_id in range(num_nodes - 1):
+
+                    incoming_edges_idx = (data.edge_index[1] == node_id).nonzero(as_tuple=True)[0]
+                    if incoming_edges_idx.size(0) > 0:
+
+                        incoming_edge_attrs = data.edge_attr[incoming_edges_idx].mean(dim=0)
+                    else:
+
+                        incoming_edge_attrs = torch.zeros_like(data.edge_attr[0])
+                    virtual_edge_attrs.append(incoming_edge_attrs)
+                    virtual_edge_attrs.append(incoming_edge_attrs)
+
+                virtual_edge_attrs = torch.stack(virtual_edge_attrs, dim=0)
+                data.edge_attr = torch.cat([data.edge_attr, virtual_edge_attrs], dim=0)
+            else:
+                data.edge_attr = None
+
+            edges_from_virtual_node = torch.vstack(
+                [torch.full((num_nodes - 1,), num_nodes - 1, dtype=torch.long), torch.arange(num_nodes - 1)])
+            edges_to_virtual_node = torch.vstack(
+                [torch.arange(num_nodes - 1), torch.full((num_nodes - 1,), num_nodes - 1, dtype=torch.long)])
+
+            data.edge_index = torch.cat([data.edge_index, edges_from_virtual_node, edges_to_virtual_node], dim=1)
+
+
 
         # Reduce nodes by degree-based grouping
         if self.group_degree > 0:
@@ -152,14 +187,13 @@ class FeatureExpander(MessagePassing):
         assert edge_weight.size(0) == edge_index.size(1)
 
         edge_index, edge_weight = remove_self_loops(edge_index, edge_weight)
-        edge_index = add_self_loops(edge_index, num_nodes=num_nodes)
+        edge_index = add_self_loops(edge_index, num_nodes=num_nodes)[0]
         # Add edge_weight for loop edges.
         loop_weight = torch.full((num_nodes, ),
                                  diag_val,
                                  dtype=edge_weight.dtype,
                                  device=edge_weight.device)
         edge_weight = torch.cat([edge_weight, loop_weight], dim=0)
-
         row, col = edge_index
         deg = scatter_add(edge_weight, row, dim=0, dim_size=num_nodes)
         deg_inv_sqrt = deg.pow(-0.5)

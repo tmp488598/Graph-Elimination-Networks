@@ -37,7 +37,7 @@ class GNN_node(torch.nn.Module):
         self.batch_norms = torch.nn.ModuleList()
 
         for layer in range(num_layer):
-            self.convs.append(GENsConv(emb_dim, emb_dim,fea_drop = 'normal', hop_att=True, base_model = 'gat'))
+            self.convs.append(GENsConv(emb_dim, emb_dim,fea_drop = 'none', hop_att=True, base_model = 'gat'))
             self.batch_norms.append(torch.nn.BatchNorm1d(emb_dim))
 
     def forward(self, batched_data):
