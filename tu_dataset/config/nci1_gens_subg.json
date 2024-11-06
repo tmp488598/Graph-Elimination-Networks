@@ -16,7 +16,7 @@
     },
 
     "params": {
-        "gpu": 1,
+        "gpu": 0,
         "seed": 41,
         "net": "GNN",
         "epoch_select": "test_max",
@@ -26,7 +26,7 @@
         "batch_size": 128,
         "lr": 0.0005,
         "scheduler": false,
-        "weight_decay": 5e-4
+        "weight_decay": 0.0005
     },
 
     "net_params": {
@@ -41,14 +41,14 @@
         "batch_norm": true,
         "concat": false,
         "sum_x": false,
-        "gens_K":2,
-        "gens_gamma":1,
+        "gens_K": 2,
+        "gens_gamma": 1,
         "gens_fea_drop": "normal",
-        "gens_hop_att":false,
-        "gens_heads":1,
-        "gens_base_model":"gat",
-        "gens_edge_dim":-1,
-        "gens_att_dropout":0,
-        "gens_att_concat":false
+        "gens_hop_att": false,
+        "gens_heads": 1,
+        "gens_base_model": "gat",
+        "gens_edge_dim": -1,
+        "gens_att_dropout": 0,
+        "gens_att_concat": false
     }
 }

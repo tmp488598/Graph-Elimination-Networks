@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/ogb/products/mini_batch/gat.py" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/ogb/proteins/mini_batch/dataset.py" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/pyg_dataset/zinc/README.md" charset="GBK" />
-  </component>
-</project>
