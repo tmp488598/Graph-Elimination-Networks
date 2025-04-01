@@ -1,0 +1,3 @@
+MPNN 0.0017797168867987696 64 7 0.2 False False False 2 1.0 gcn False simple 46.25 $\pm$ 0.61
+MPNN 0.0018 64 7 0.2 False False False 1e-05 500 2 1.0 gcn True simple 41.65 $\pm$ 2.29
+MPNN 0.002 64 7 0.2 False False False 1e-05 500 2 1.0 gcn True simple 41.03 $\pm$ 2.26 

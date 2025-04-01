@@ -1,0 +1,86 @@
+out_dir: results
+metric_best: accuracy-SBM
+wandb:
+  use: True
+  project: CLUSTER
+  entity: expand-gnns
+dataset:
+  format: PyG-GNNBenchmarkDataset
+  name: CLUSTER
+  task: graph
+  task_type: classification
+  transductive: False
+  split_mode: standard
+  node_encoder: True
+  node_encoder_name: LinearNode+EquivStableLapPE
+  node_encoder_bn: False
+  edge_encoder: True
+  edge_encoder_name: DummyEdge
+  edge_encoder_bn: False
+prep:
+  exp: True #True>F
+  exp_algorithm: 'Hamiltonian'
+  exp_deg: 3 # Algorithm will use 3 permutations or 3 Hamiltonian cycles, so actual degree will be 6
+  add_edge_index: True # Set True if you want to add real edges beside expander edges
+  num_virt_node: 2 # Set 0 if you don't want to use virtual nodes 2>3>1
+posenc_EquivStableLapPE:
+  enable: True
+  eigen:
+    laplacian_norm: none
+    eigvec_norm: L2
+    max_freqs: 10
+  raw_norm_type: none
+train:
+  mode: custom
+  batch_size: 32 #32>16 and 64
+  eval_period: 1
+  ckpt_period: 100
+model:
+  type: custom_gnn
+  loss_fun: weighted_cross_entropy
+  edge_decoding: dot
+gt:
+  layer_type: CustomGatedGCN+Exphormer # some other options: Exphormer, GINE+Exphormer, GINE, GINE__exp
+  layers: 1
+  n_heads: 2
+  dim_hidden: 80  # `gt.dim_hidden` must match `gnn.dim_inner`
+  dropout: 0.0
+  attn_dropout: 0.5
+  layer_norm: False
+  batch_norm: True
+gnn:
+  head: inductive_node #inductive_node, global_san
+  layers_pre_mp: 0
+  layers_mp: 28
+  layers_post_mp: 3
+  dim_inner: 34  # 80>64
+  batchnorm: True #T>F
+  act: relu
+  dropout: 0.1 # 0.1 >=0.2
+  agg: mean
+  normalize_adj: False
+  residual: True #T>F
+  layer_type: gensconv
+  init_res: False
+  init_res_ratio: 0.0
+  gens:
+    hop_att: True #T>F
+    K: 4
+    gamma: 1.0
+    fea_drop: simple
+    base_model: gcn # gcn > gat
+    concat: False
+    heads: 4
+    edge_dim: 34
+    att_dropout: 0.15
+    diff_alpha: False
+    use_ffN: True
+    norm_type: "batch"
+optim:
+  clip_grad_norm: False #False>True
+  optimizer: adamW
+  weight_decay: 1e-3
+  base_lr: 0.001
+  max_epoch: 300
+  scheduler: cosine_with_warmup
+  num_warmup_epochs: 5 #5>10

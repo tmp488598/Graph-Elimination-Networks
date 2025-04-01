@@ -1,0 +1,4 @@
+MPNN 0.008137789097866855 128 9 0.2 False True False True 0.0001 1 2000 0.24740187964199745 gat True simple 92.00 $\pm$ 0.15
+MPNN 0.005062298138374795 192 9 0.2 False True False 0.0001 2000 1 1.0915994863640444 gat True simple 92.52 $\pm$ 0.52
+MPNN 0.005 192 9 0.2 False True False 0.0001 2000 1 1.0 gat True simple 89.60 $\pm$ 0.38
+MPNN 0.004 192 9 0.2 False True False 0.0001 2000 1 1.0 gat True simple 89.54 $\pm$ 0.50 

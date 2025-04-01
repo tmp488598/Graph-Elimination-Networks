@@ -1,0 +1,2 @@
+MPNN 3e-05 512 10 0.3 False False True 78.37 $\pm$ 0.10 
+MPNN 0.0035 256 10 0.4 False True False 1e-05 1500 1 1.0 gcn True simple 97.02 $\pm$ 0.05 

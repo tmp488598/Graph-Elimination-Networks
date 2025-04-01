@@ -1,0 +1,4 @@
+ MPNN 0.0055021972614498925 16 9 0.2 True False True 0.0001 2 1.0 gcn False simple 47.10 $\pm$ 4.40
+{'hidden_channels': 16, 'local_layers': 9, 'epochs': 500, 'lr': 0.0055021972614498925, 'weight_decay': 0.0001, 'dropout': 0.2, 'use_ln': True, 'use_bn': False, 'use_res': True, 'use_pre_linear': False}
+MPNN 0.0055 16 9 0.2 True False True 0.0001 500 2 1.0 gcn True simple 42.78 $\pm$ 3.67
+MPNN 0.005 16 9 0.2 True False True 0.0001 500 2 1.0 gcn True simple 43.73 $\pm$ 3.29 
