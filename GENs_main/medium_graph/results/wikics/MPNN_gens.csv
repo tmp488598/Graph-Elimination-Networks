@@ -1,4 +1,0 @@
-MPNN 0.00035 1024 2 0.9 True False False False 1e-05 2 1000 0.8 gat True simple head=16 concat=True 81.48 $\pm$ 0.46
-MPNN 0.0004 1024 2 0.9 True False False 1e-05 1000 2 0.8 gat True simple 80.68 $\pm$ 0.34 
-MPNN 0.0004 1024 2 0.92 True False False 1e-05 1000 2 0.8 gat True simple 80.53 $\pm$ 0.56 
-MPNN 0.00035 1024 2 0.9 True False False 1e-05 1000 2 0.8 gat True simple 80.82 $\pm$ 0.06 
