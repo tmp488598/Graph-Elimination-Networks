@@ -1,6 +1,6 @@
 # Graph Elimination Networks
 
-This repository provides an **anonymous** code release of our work on *“Graph Elimination Networks”*, currently under double-blind review. The repository includes an updated PDF (`ICML25_4883.pdf`) reflecting clarifications and minor changes based on reviewer feedback. 
+This repository provides an **anonymous** code release of our work on *“Graph Elimination Networks”*, currently under double-blind review. The repository includes an updated PDF (`ICML25_4883.pdf`) reflecting clarifications and changes based on reviewer feedback. 
 
 **Please note that this PDF is provided solely for reference and does not constitute a formal revision or resubmission of the paper.**
 
