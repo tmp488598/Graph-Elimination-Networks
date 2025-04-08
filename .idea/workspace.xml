@@ -3,7 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="4d13c8c7-9028-4661-958f-678eed3b4f0d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/zinc.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/zinc.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/coco.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/coco.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/peptides-func.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/peptides-func.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/vocsuperpixels.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/vocsuperpixels.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/graphgps/layer/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/graphgps/layer/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/medium_graph/run_gnn.sh" beforeDir="false" afterPath="$PROJECT_DIR$/medium_graph/run_gnn.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zinc/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/zinc/gnn.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +34,16 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/medium_graph/Param_search.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LRGB-main/configs/GENs/coco.yaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LRGB-main/configs/GENs/cluster.yaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LRGB-main/configs/GENs/cifar10.yaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LRGB-main/configs/GENs/physics.yaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LRGB-main/configs/GENs/computer.yaml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/zinc/gnn.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/LRGB-main/configs/GENs/vocsuperpixels.yaml" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="2q17wAjsgx0534bustcBVSCAcqi" />
   <component name="ProjectViewState">
@@ -63,8 +80,8 @@
       <recent name="E:\method\tunedGNN-main\medium_graph\data\geom-gcn\chameleon" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.models (2)">
-    <configuration name="gens_print" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.gnn (1)">
+    <configuration name="gnn (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="method" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -72,12 +89,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/zinc" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/gens_print.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/zinc/gnn.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -152,7 +169,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="models" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="method" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -160,12 +177,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/simclr-pytorch-master" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/LRGB-main/graphgps/layer" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/simclr-pytorch-master/test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/LRGB-main/graphgps/layer/models.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -176,11 +193,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.gnn (1)" />
+        <item itemvalue="Python.models" />
         <item itemvalue="Python.models (2)" />
         <item itemvalue="Python.models (1)" />
         <item itemvalue="Python.gnn" />
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.gens_print" />
       </list>
     </recent_temporary>
   </component>
@@ -206,7 +223,7 @@
       <workItem from="1741082428946" duration="11635000" />
       <workItem from="1741839810665" duration="24490000" />
       <workItem from="1742108943180" duration="44855000" />
-      <workItem from="1743084611410" duration="121495000" />
+      <workItem from="1743084611410" duration="185842000" />
     </task>
     <servers />
   </component>
@@ -234,7 +251,8 @@
     <SUITE FILE_PATH="coverage/method$test.coverage" NAME="test Coverage Results" MODIFIED="1740140197475" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simclr-pytorch-master" />
     <SUITE FILE_PATH="coverage/method$models__1_.coverage" NAME="models (1) Coverage Results" MODIFIED="1743508027602" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/GENs_main" />
     <SUITE FILE_PATH="coverage/method$models__2_.coverage" NAME="models (2) Coverage Results" MODIFIED="1743513140851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/method$models.coverage" NAME="models Coverage Results" MODIFIED="1736502888258" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/method$gnn__1_.coverage" NAME="gnn (1) Coverage Results" MODIFIED="1744007673332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/zinc" />
+    <SUITE FILE_PATH="coverage/method$models.coverage" NAME="models Coverage Results" MODIFIED="1743753173770" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/LRGB-main/graphgps/layer" />
     <SUITE FILE_PATH="coverage/method$graph_to_tree_transform__1_.coverage" NAME="graph_to_tree_transform (1) Coverage Results" MODIFIED="1736430447741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ogb/arxiv" />
     <SUITE FILE_PATH="coverage/method$main_batch.coverage" NAME="main-batch Coverage Results" MODIFIED="1733819682143" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/NodeFormer-main" />
     <SUITE FILE_PATH="coverage/method$gens_print.coverage" NAME="gens_print Coverage Results" MODIFIED="1737284838355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

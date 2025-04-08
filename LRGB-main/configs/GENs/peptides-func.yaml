@@ -53,13 +53,13 @@ gnn:
   dropout: 0.1
   batchnorm: True
   gens:
-    hop_att: True
+    hop_att: False
     K: 3
-    gamma: 0.8
+    gamma: 1.0
     fea_drop: simple
     base_model: gat
     concat: True
-    heads: 1
+    heads: 2
     edge_dim: 80
     use_ffN: True
     diff_alpha: False
@@ -67,8 +67,8 @@ gnn:
 optim:
   clip_grad_norm: True
   optimizer: adamW
-  weight_decay: 0.0
+  weight_decay: 0.0001
   base_lr: 0.001
-  max_epoch: 250
+  max_epoch: 500
   scheduler: cosine_with_warmup
   num_warmup_epochs: 5

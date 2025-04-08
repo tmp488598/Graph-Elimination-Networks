@@ -203,9 +203,9 @@ def main():
     #GCN 0.1413 ¡À 0.0117
     #GIN 0.1966 ¡À 0.0142
 
-    dataset = ZINC(root='data/ZINC',subset=True, split='train')
-    test_dataset = ZINC(root='data/ZINC',subset=True,split='test')
-    eval_dataset = ZINC(root='data/ZINC',subset=True, split='val')
+    dataset = ZINC(root='data/ZINC', split='train')
+    test_dataset = ZINC(root='data/ZINC',split='test')
+    eval_dataset = ZINC(root='data/ZINC', split='val')
 
     _, train_no_cycle_list = split_dataset_by_cycle(dataset)
     _, test_no_cycle_list = split_dataset_by_cycle(test_dataset)

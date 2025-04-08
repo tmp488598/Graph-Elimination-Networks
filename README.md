@@ -1,15 +1,22 @@
 # Graph Elimination Networks
-A graph neural network that improves the algorithm’s performance in capturing long-range node dependencies by eliminating redundancy in propagation. This project is the official implementation of the paper "Graph Elimination Networks".
+
+This repository provides an **anonymous** code release of our work on *“Graph Elimination Networks”*, currently under double-blind review. The repository includes an updated PDF (`ICML25_4883.pdf`) reflecting clarifications and minor changes based on reviewer feedback. 
+
+**Please note that this PDF is provided solely for reference and does not constitute a formal revision or resubmission of the paper.**
 
 ![image](./fig/review.png)
 
+## Updated PDF (for review reference)
+
+- The updated PDF is located at:  
+  **[`paper_modified.pdf`](./ICML25_4883.pdf)**  
+  It highlights small modifications or additional clarifications in response to reviewer questions.
 
 ## Installation
-* Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
-* Alternatively, install the above and the packages listed in [requirements.txt](requirements.txt)
-```
-pip install -r requirements.txt
-```
+- Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
+- Alternatively, install all the packages listed in [requirements.txt](requirements.txt):
+  ```bash
+  pip install -r requirements.txt
 ## Overview
 * `/tu_dataset` <br/> The code in this file supports running on any graph dataset contained in the [TUDataset](https://chrsmrrs.github.io/datasets/docs/home/).
 * `/ogb`  <br/> Contains four datasets from the [Open Graph Benchmark (OGB)](https://github.com/snap-stanford/ogb) used in the paper experiments, the code is from the official GCN baseline, and only supports full-batch training.

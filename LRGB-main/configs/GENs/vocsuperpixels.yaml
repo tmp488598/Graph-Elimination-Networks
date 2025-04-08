@@ -1,5 +1,6 @@
 out_dir: results
 metric_best: f1
+num_workers: 12
 wandb:
   use: True
   project: Pascal
@@ -11,7 +12,7 @@ dataset:
   task_type: classification
   transductive: False
   node_encoder: True
-  node_encoder_name: VOCNode+RWSE
+  node_encoder_name: VOCNode+LapPE
   node_encoder_bn: False
   edge_encoder: True
   edge_encoder_name: VOCEdge
@@ -22,7 +23,7 @@ prep:
   add_edge_index: True # Set True if you want to add real edges beside expander edges
   num_virt_node: 0 # Set True if you want to add global node connections beside expander edges
 posenc_LapPE:
-  enable: False
+  enable: True
   eigen:
     laplacian_norm: none
     eigvec_norm: L2
@@ -32,7 +33,7 @@ posenc_LapPE:
   layers: 2
   raw_norm_type: none
 posenc_RWSE:
-  enable: True
+  enable: False
   kernel:
     times_func: range(1,21)
   model: Linear
@@ -40,7 +41,7 @@ posenc_RWSE:
   raw_norm_type: BatchNorm
 train:
   mode: custom
-  batch_size: 200
+  batch_size: 50
   eval_period: 1
   ckpt_period: 100
   eval_smoothing_metrics: True
@@ -58,12 +59,11 @@ gnn:
   residual: True
   dropout: 0.3
   batchnorm: True
-  agg: max
   pre_gnn_type: 'walk'
   gens:
     hop_att: True
     K: 3
-    gamma: 1.0
+    gamma: 0.7
     fea_drop: simple
     base_model: gat
     concat: True
@@ -78,6 +78,6 @@ optim:
   optimizer: adamW
   weight_decay: 0.0
   base_lr: 0.001
-  max_epoch: 200
+  max_epoch: 300
   scheduler: cosine_with_warmup
   num_warmup_epochs: 10

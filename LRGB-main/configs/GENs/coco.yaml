@@ -62,11 +62,11 @@ gnn:
   gens:
     hop_att: True
     K: 3
-    gamma: 1.0
-    fea_drop: simple
+    gamma: 0.7
+    fea_drop: none
     base_model: gat
-    concat: False
-    heads: 1
+    concat: True
+    heads: 2
     edge_dim: 80
     use_ffN: True
     diff_alpha: False
