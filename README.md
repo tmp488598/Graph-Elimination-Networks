@@ -2,15 +2,12 @@
 
 This repository provides an **anonymous** code release of our work on *“Graph Elimination Networks”*, currently under double-blind review. The repository includes an updated PDF (`ICML25_4883.pdf`) reflecting clarifications and changes based on reviewer feedback. 
 
-**Please note that this PDF is provided solely for reference and does not constitute a formal revision or resubmission of the paper.**
-
 ![image](./fig/review.png)
 
 ## Updated PDF (for review reference)
 
 - The updated PDF is located at:  
-  **[`ICML25_4883.pdf`](./ICML25_4883.pdf)**  
-  It highlights small modifications or additional clarifications in response to reviewer questions.
+  **[`ICML25_4883.pdf`](./ICML25_4883.pdf)**
 
 ## Installation
 - Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
@@ -18,7 +15,7 @@ This repository provides an **anonymous** code release of our work on *“Graph 
   ```bash
   pip install -r requirements.txt
 ## Overview
-* `/tu_dataset` <br/> The code in this file supports running on any graph dataset contained in the [TUDataset](https://chrsmrrs.github.io/datasets/docs/home/).
+* `/tu_dataset` <br/> The code in thisfile supports running on any graph dataset contained in the [TUDataset](https://chrsmrrs.github.io/datasets/docs/home/).
 * `/ogb`  <br/> Contains four datasets from the [Open Graph Benchmark (OGB)](https://github.com/snap-stanford/ogb) used in the paper experiments, the code is from the official GCN baseline, and only supports full-batch training.
 * `/LRGB-main` <br/> Run the code in this folder to reproduce our experimental results on the [LRGB](https://github.com/vijaydwivedi75/lrgb) and [Graph Benchmarks](https://github.com/graphdeeplearning/benchmarking-gnns).
 * `/medium_graph` <br/> Include the experimental code and results for node classification and heterogeneous graphs mentioned in the paper; our code is based on the [tunedGNN](https://github.com/LUOyk1999/tunedGNN) project.
