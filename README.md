@@ -9,7 +9,7 @@ This repository provides an **anonymous** code release of our work on *“Graph 
 ## Updated PDF (for review reference)
 
 - The updated PDF is located at:  
-  **[`paper_modified.pdf`](./ICML25_4883.pdf)**  
+  **[`ICML25_4883.pdf`](./ICML25_4883.pdf)**  
   It highlights small modifications or additional clarifications in response to reviewer questions.
 
 ## Installation
