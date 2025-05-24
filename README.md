@@ -1,13 +1,8 @@
 # Graph Elimination Networks
 
-This repository provides an **anonymous** code release of our work on *“Graph Elimination Networks”*, currently under double-blind review. The repository includes an updated PDF (`ICML25_4883.pdf`) reflecting clarifications and changes based on reviewer feedback. 
+This repository provides an **anonymous** code release of our work on *“Graph Elimination Networks”*, currently under double-blind review.
 
 ![image](./fig/review.png)
-
-## Updated PDF (for review reference)
-
-- The updated PDF is located at:  
-  **[`ICML25_4883.pdf`](./ICML25_4883.pdf)**
 
 ## Installation
 - Tested with Python 3.8, PyTorch 1.11.0, and PyTorch Geometric 2.2.0
