@@ -3,7 +3,23 @@
   <component name="ChangeListManager">
     <list default="true" id="4d13c8c7-9028-4661-958f-678eed3b4f0d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/coco.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/coco.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/peptides-func.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/peptides-func.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/GENs/vocsuperpixels.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/configs/GENs/vocsuperpixels.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/coco-GENs.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/coco-GENsgcn.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/pcqm-contact-GENs.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/pcqm-contact-GENsgcn.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/peptides-func-GENs.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/peptides-func-GENsgcn.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/peptides-struct-GENs.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/peptides-struct-GENsgcn.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/vocsuperpixels-GENs.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/configs/LRGB-tuned/vocsuperpixels-GENsgcn.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/graphgps/head/global_head.py" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/graphgps/head/global_head.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LRGB-main/graphgps/layer/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/LRGB-main/graphgps/layer/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +89,7 @@
       <recent name="E:\method\tunedGNN-main\medium_graph\data\geom-gcn\chameleon" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.gnn (1)">
+  <component name="RunManager" selected="Python.models (2)">
     <configuration name="gnn (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="method" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -217,6 +233,7 @@
       <workItem from="1741839810665" duration="24490000" />
       <workItem from="1742108943180" duration="44855000" />
       <workItem from="1743084611410" duration="187534000" />
+      <workItem from="1748674655195" duration="5024000" />
     </task>
     <servers />
   </component>

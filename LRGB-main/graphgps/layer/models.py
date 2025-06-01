@@ -235,7 +235,7 @@ class GENsConv(MessagePassing):
             for k in range(self.K):
                 x_ = self.propagate(edge_index, x=x, edge_weight=edge_weight, del1=del1, alpha=None, edge_attr=None,
                                     num_node=x.size(0), deg=deg)
-                preds = preds * self.gamma
+                # preds = preds * self.gamma
                 x = x_ if self.fea_drop == 'simple' else x_ + preds.sum(dim=0)
                 preds = torch.cat([preds, torch.unsqueeze(x_, dim=0)], dim=0)
                 del1 = self.d0
@@ -255,7 +255,7 @@ class GENsConv(MessagePassing):
             for k in range(self.K):
                 x_ = self.propagate(edge_index, x=x, alpha=alpha, edge_attr=edge_attr, edge_weight=None,
                                     num_node=x.size(0), del1=del1, deg=deg)
-                preds = preds * self.gamma
+                # preds = preds * self.gamma
                 x = x_ if self.fea_drop == 'simple' else x_ + preds.sum(dim=0)
                 preds = torch.cat([preds, torch.unsqueeze(x_, dim=0)], dim=0)
                 del1 = self.d0
@@ -265,13 +265,21 @@ class GENsConv(MessagePassing):
         else:
             return (1-init_ratio) * x_t + init_ratio * x0
 
+
+        def power_compression(x, gamma):
+            eps = 1e-8
+            norm = torch.linalg.norm(x, dim=-1, keepdim=True) + eps
+            return x / norm.pow(gamma)
+
+        preds = power_compression(preds, self.gamma)
+
         if self.hop_att:
             K, H, C = self.K + 1, self.heads, self.out_channels
             q = self.q(preds).view(K, -1, H, C)  # Multi-head self-attention
             k = torch.unsqueeze(self.k(preds[0]).view(-1, H, C), dim=-2)
             att = torch.einsum('nxhd,xhyd->xnhy', [q, k])
             att = F.softmax(att, dim=1)
-            att = F.dropout(att, p=self.dropout, training=self.training)
+            # att = F.dropout(att, p=self.dropout, training=self.training)
             preds = self.lin(preds).view(K, -1, H, C).transpose(0, 1) * att
             preds = preds.sum(dim=1).view(-1, H * C) if self.concat else preds.sum(dim=1).mean(dim=-2)
             preds = preds + x_t
@@ -299,11 +307,11 @@ class GENsConv(MessagePassing):
 
             if self.fea_drop == 'normal':  # Paper formula 13
                 with torch.no_grad():
-                    self.d0 = (x_i * self.gamma + x_j * edge_weight - self.de0) * edge_weight  # *c_jj
+                    self.d0 = (x_i * 1 + x_j * edge_weight - self.de0) * edge_weight  # *c_jj
                     if del1 is not None:
-                        self.de0 = (x_i * edge_weight + x_j * self.gamma - del1) * edge_weight  # *c_ii
+                        self.de0 = (x_i * edge_weight + x_j * 1 - del1) * edge_weight  # *c_ii
                     else:
-                        self.de0 = (x_i * edge_weight + x_j * self.gamma) * edge_weight
+                        self.de0 = (x_i * edge_weight + x_j * 1) * edge_weight
 
 
             return edge_weight * x_j
@@ -331,11 +339,11 @@ class GENsConv(MessagePassing):
                 c_ji = softmax(c_ji, edge_index[0], num_nodes=num_node).unsqueeze(-1).mean(dim=1)
                 # c_ji = F.dropout(c_ji, p=self.dropout, training=self.training).unsqueeze(-1).mean(dim=1)
                 with torch.no_grad():
-                    self.d0 = (x_i * self.gamma + x_j * c_ij - self.de0) * c_ji  # *c_jj
+                    self.d0 = (x_i * 1 + x_j * c_ij - self.de0) * c_ji  # *c_jj
                     if del1 is not None:
-                        self.de0 = (x_i * c_ji + x_j * self.gamma - del1) * c_ij  # *c_ii
+                        self.de0 = (x_i * c_ji + x_j * 1 - del1) * c_ij  # *c_ii
                     else:
-                        self.de0 = (x_i * c_ji + x_j * self.gamma) * c_ij
+                        self.de0 = (x_i * c_ji + x_j * 1) * c_ij
 
             # return x_j * c_ij * torch.index_select(1 - 1 / deg, dim=0, index=edge_index[0]).view(-1, 1)
             return x_j * c_ij
@@ -354,7 +362,7 @@ class GENsConv(MessagePassing):
 
 
 if __name__ == '__main__':
-    model = GENsConv(5, 5, base_model='gcn', hop_att=False, fea_drop='simple', K=8, gamma=1, no_param=True)  # Adjusting the K test for the effect of GEA
+    model = GENsConv(5, 5, base_model='gcn', hop_att=False, fea_drop='simple', K=8, gamma=0.6, no_param=True)  # Adjusting the K test for the effect of GEA
     x = torch.tensor([[1, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]],
                      dtype=torch.float)
     edge_index = torch.tensor([[0, 1, 2, 3,1, 2, 3,4], [1, 2, 3, 4,0, 1, 2,3]])

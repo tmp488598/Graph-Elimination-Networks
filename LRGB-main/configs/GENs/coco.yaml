@@ -1,5 +1,6 @@
 out_dir: results
 metric_best: f1
+num_workers: 4
 wandb:
   use: True
   project: COCO
@@ -11,7 +12,7 @@ dataset:
   task_type: classification
   transductive: False
   node_encoder: True
-  node_encoder_name: COCONode
+  node_encoder_name: COCONode+LapPE
   node_encoder_bn: False
   edge_encoder: True
   edge_encoder_name: COCOEdge
@@ -22,7 +23,7 @@ dataset:
 #  add_edge_index: True # Set True if you want to add real edges beside expander edges
 #  num_virt_node: 0 # Set True if you want to add global node connections beside expander edges
 posenc_LapPE:
-  enable: False
+  enable: True
   eigen:
     laplacian_norm: none
     eigvec_norm: L2
@@ -48,33 +49,35 @@ model:
   type: custom_gnn
   loss_fun: weighted_cross_entropy
 gnn:
-  head: inductive_node
+  head: global_head
   layers_pre_mp: 1
-  layers_mp: 10
+  layers_mp: 9
   layers_post_mp: 1
   dim_inner: 80
   layer_type: gensconv
   act: gelu
   residual: True
-  dropout: 0.2
+  dropout: 0.1
   batchnorm: True
   pre_gnn_type: 'walk'
   gens:
     hop_att: True
-    K: 3
-    gamma: 0.7
-    fea_drop: none
+    K: 10
+    gamma: 0.1
+    fea_drop: simple
     base_model: gat
     concat: True
-    heads: 2
+    heads: 4
     edge_dim: 80
+    att_dropout: 0.0
     use_ffN: True
     diff_alpha: False
     norm_type: "batch"
 optim:
+  clip_grad_norm: True
   optimizer: adamW
   weight_decay: 0.0
   base_lr: 0.001
-  max_epoch: 200
+  max_epoch: 300
   scheduler: cosine_with_warmup
   num_warmup_epochs: 10

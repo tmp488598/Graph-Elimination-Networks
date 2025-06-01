@@ -42,33 +42,34 @@ model:
   loss_fun: cross_entropy
   graph_pooling: mean
 gnn:
-  head: same_gnn
+  head: mlp_graph
   layers_pre_mp: 0
-  layers_mp: 8
-  layers_post_mp: 1
-  dim_inner: 80
+  layers_mp: 12
+  layers_post_mp: 3
+  dim_inner: 120
   layer_type: gensconv
   act: gelu
   residual: True
-  dropout: 0.1
+  dropout: 0.15
   batchnorm: True
   gens:
     hop_att: False
-    K: 3
-    gamma: 1.0
+    K: 4
+    gamma: 0.15
     fea_drop: simple
     base_model: gat
     concat: True
     heads: 2
-    edge_dim: 80
-    use_ffN: True
+    edge_dim: 120
+    use_ffN: False
+    att_dropout: 0.0
     diff_alpha: False
     norm_type: "batch"
 optim:
   clip_grad_norm: True
   optimizer: adamW
-  weight_decay: 0.0001
-  base_lr: 0.001
+  weight_decay: 0.0005
+  base_lr: 0.0010848728590091784
   max_epoch: 500
   scheduler: cosine_with_warmup
   num_warmup_epochs: 5

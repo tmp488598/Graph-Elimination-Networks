@@ -81,29 +81,29 @@ class GENsConv(MessagePassing):
     _cached_edge_index: Optional[Tuple[Tensor, Tensor]]
     _cached_adj_t: Optional[SparseTensor]
     '''
-
     Args:
-        K: number of hops for single-layer network propagation.
-        gamma：a hyperparameter that controls the decay, used to balance
-            the difference between the central feature and other features in
-            the receptive field. When K is greater than 2, it can be considered
-            to reduce it appropriately.
-        fea_drop: elimination method, supports normal/simple/None, corresponding
-            to normal elimination, removing self-loops, or doing nothing.
-        hop_att: whether to use self-attention across multiple hops.
-        heads: number of attention heads.
-        base_model: base model, supports gcn and gat.
-        x0: used to pass the initial features of the dataset, increase the initial
-            residual, can be considered when the number of stacked layers is very deep.
+    K: number of hops for single-layer network propagation.
+    gamma：a hyperparameter that controls the decay, used to balance
+        the difference between the central feature and other features in
+        the receptive field. When K is greater than 2, it can be considered
+        to reduce it appropriately.
+    fea_drop: elimination method, supports normal/simple/None, corresponding
+        to normal elimination, removing self-loops, or doing nothing.
+    hop_att: whether to use self-attention across multiple hops.
+    heads: number of attention heads.
+    base_model: base model, supports gcn and gat.
+    concat: Whether to concatenate the outputs of different attention heads, note that this will expand the dimension.
+    norm_type: The normalization type after the feed-forward network (FFN), supports 'layer', 'batch', or 'None'.
+    no_param: Whether to run a non-parametric toy example.
     '''
 
     def __init__(self, in_channels: int, out_channels: int,
                  improved: bool = False, cached: bool = False,
                  normalize: bool = True, K: int = 1, gamma: float = 1,
                  fea_drop: bool = 'simple', hop_att: bool = False,
-                 heads: int = 2, base_model: str = 'gcn', negative_slope=0.2,
-                 edge_dim=None, concat=False, dropout=0.2,
-                 use_ffN=False, diff_alpha=False, norm_type=None,
+                 heads: int = 1, base_model: str = 'gcn', negative_slope=0.2,
+                 edge_dim=None, concat=False, dropout=0.0,
+                 use_ffN=False, norm_type=None,
                  no_param=False, **kwargs):
 
         kwargs.setdefault('aggr', 'add')
@@ -127,7 +127,6 @@ class GENsConv(MessagePassing):
         self.dropout = dropout
         self.negative_slope = negative_slope
         self.use_ffN = use_ffN
-        self.diff_alpha = diff_alpha  # use different alpha
         self.norm_type = norm_type
         self.no_param = no_param
         self.is_undirected =None
@@ -143,6 +142,7 @@ class GENsConv(MessagePassing):
         self.lin_2 = Linear(in_channels, out_channels, weight_initializer='glorot')
         if concat:
             self.lin_2 = Linear(in_channels, heads * out_channels, weight_initializer='glorot')
+            self.lin = Linear(in_channels, heads * out_channels, weight_initializer='glorot')
 
         if self.use_ffN:
             self.feed_forward = FFN(heads * out_channels, heads * out_channels, dropout) \
@@ -162,6 +162,9 @@ class GENsConv(MessagePassing):
             else:
                 self.lin_edge = None
                 self.register_parameter('att_edge', None)
+        else:
+            self.lin_edge = None
+            self.register_parameter('att_edge', None)
 
         self.reset_parameters()
 
@@ -198,8 +201,6 @@ class GENsConv(MessagePassing):
         else:
             x_t = self.lin_2(x)
 
-        self.redundancy = [0]
-
         if self.base_model == 'gcn':
             if self.normalize:
                 if isinstance(edge_index, Tensor):
@@ -233,7 +234,7 @@ class GENsConv(MessagePassing):
             for k in range(self.K):
                 x_ = self.propagate(edge_index, x=x, edge_weight=edge_weight, del1=del1, alpha=None, edge_attr=None,
                                     num_node=x.size(0), deg=deg)
-                preds = preds * self.gamma
+                # preds = preds * self.gamma
                 x = x_ if self.fea_drop == 'simple' else x_ + preds.sum(dim=0)
                 preds = torch.cat([preds, torch.unsqueeze(x_, dim=0)], dim=0)
                 del1 = self.d0
@@ -253,7 +254,7 @@ class GENsConv(MessagePassing):
             for k in range(self.K):
                 x_ = self.propagate(edge_index, x=x, alpha=alpha, edge_attr=edge_attr, edge_weight=None,
                                     num_node=x.size(0), del1=del1, deg=deg)
-                preds = preds * self.gamma
+                # preds = preds * self.gamma
                 x = x_ if self.fea_drop == 'simple' else x_ + preds.sum(dim=0)
                 preds = torch.cat([preds, torch.unsqueeze(x_, dim=0)], dim=0)
                 del1 = self.d0
@@ -263,13 +264,22 @@ class GENsConv(MessagePassing):
         else:
             return (1-init_ratio) * x_t + init_ratio * x0
 
+
+        def power_compression(x, gamma):
+            eps = 1e-8
+            norm = torch.linalg.norm(x, dim=-1, keepdim=True) + eps
+            return x / norm.pow(gamma)
+
+        if not self.no_param:
+            preds = power_compression(preds, self.gamma)
+
         if self.hop_att:
             K, H, C = self.K + 1, self.heads, self.out_channels
             q = self.q(preds).view(K, -1, H, C)  # Multi-head self-attention
             k = torch.unsqueeze(self.k(preds[0]).view(-1, H, C), dim=-2)
             att = torch.einsum('nxhd,xhyd->xnhy', [q, k])
             att = F.softmax(att, dim=1)
-            att = F.dropout(att, p=self.dropout, training=self.training)
+            # att = F.dropout(att, p=self.dropout, training=self.training)
             preds = self.lin(preds).view(K, -1, H, C).transpose(0, 1) * att
             preds = preds.sum(dim=1).view(-1, H * C) if self.concat else preds.sum(dim=1).mean(dim=-2)
             preds = preds + x_t
@@ -297,11 +307,11 @@ class GENsConv(MessagePassing):
 
             if self.fea_drop == 'normal':  # Paper formula 13
                 with torch.no_grad():
-                    self.d0 = (x_i * self.gamma + x_j * edge_weight - self.de0) * edge_weight  # *c_jj
+                    self.d0 = (x_i * 1 + x_j * edge_weight - self.de0) * edge_weight  # *c_jj
                     if del1 is not None:
-                        self.de0 = (x_i * edge_weight + x_j * self.gamma - del1) * edge_weight  # *c_ii
+                        self.de0 = (x_i * edge_weight + x_j * 1 - del1) * edge_weight  # *c_ii
                     else:
-                        self.de0 = (x_i * edge_weight + x_j * self.gamma) * edge_weight
+                        self.de0 = (x_i * edge_weight + x_j * 1) * edge_weight
 
 
             return edge_weight * x_j
@@ -329,11 +339,11 @@ class GENsConv(MessagePassing):
                 c_ji = softmax(c_ji, edge_index[0], num_nodes=num_node).unsqueeze(-1).mean(dim=1)
                 # c_ji = F.dropout(c_ji, p=self.dropout, training=self.training).unsqueeze(-1).mean(dim=1)
                 with torch.no_grad():
-                    self.d0 = (x_i * self.gamma + x_j * c_ij - self.de0) * c_ji  # *c_jj
+                    self.d0 = (x_i * 1 + x_j * c_ij - self.de0) * c_ji  # *c_jj
                     if del1 is not None:
-                        self.de0 = (x_i * c_ji + x_j * self.gamma - del1) * c_ij  # *c_ii
+                        self.de0 = (x_i * c_ji + x_j * 1 - del1) * c_ij  # *c_ii
                     else:
-                        self.de0 = (x_i * c_ji + x_j * self.gamma) * c_ij
+                        self.de0 = (x_i * c_ji + x_j * 1) * c_ij
 
             # return x_j * c_ij * torch.index_select(1 - 1 / deg, dim=0, index=edge_index[0]).view(-1, 1)
             return x_j * c_ij
@@ -345,19 +355,16 @@ class GENsConv(MessagePassing):
 
         if self.fea_drop == 'normal' and del1 is not None:  # Paper formula 14
 
-            with torch.no_grad():
-                tmp = self.aggregate(del1, edge_index[0], dim_size=dim_size)
+            aggr_out = (aggr_out - self.aggregate(del1, edge_index[0], dim_size=dim_size))
 
-            self.redundancy.append(tmp)
-            aggr_out = (aggr_out - tmp)
         return aggr_out
 
 
 
 if __name__ == '__main__':
-    model = GENsConv(5, 5, base_model='gat', hop_att=False, fea_drop='normal', K=8, gamma=1, no_param=True)  # Adjusting the K test for the effect of GEA
+    model = GENsConv(5, 5, base_model='gcn', hop_att=False, fea_drop='normal', K=10, gamma=1.0, no_param=True)  # Adjusting the K test for the effect of GEA
     x = torch.tensor([[1, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]],
                      dtype=torch.float)
-    edge_index = torch.tensor([[0, 1, 2, 3,1, 2, 3,4], [1, 2, 3, 4,0, 1, 2,3]])
+    edge_index = torch.tensor([[0, 1, 2, 3, 1, 2, 3,4], [1, 2, 3, 4, 0, 1, 2,3]])
     out = model(x, edge_index)
     print(out)

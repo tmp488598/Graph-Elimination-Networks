@@ -12,7 +12,7 @@ dataset:
   task_type: classification
   transductive: False
   node_encoder: True
-  node_encoder_name: VOCNode+LapPE
+  node_encoder_name: VOCNode+RWSE
   node_encoder_bn: False
   edge_encoder: True
   edge_encoder_name: VOCEdge
@@ -23,7 +23,7 @@ prep:
   add_edge_index: True # Set True if you want to add real edges beside expander edges
   num_virt_node: 0 # Set True if you want to add global node connections beside expander edges
 posenc_LapPE:
-  enable: True
+  enable: False
   eigen:
     laplacian_norm: none
     eigvec_norm: L2
@@ -33,7 +33,7 @@ posenc_LapPE:
   layers: 2
   raw_norm_type: none
 posenc_RWSE:
-  enable: False
+  enable: True
   kernel:
     times_func: range(1,21)
   model: Linear
@@ -49,11 +49,11 @@ model:
   type: custom_gnn
   loss_fun: weighted_cross_entropy
 gnn:
-  head: inductive_node
+  head: global_head
   layers_pre_mp: 1
   layers_mp: 8
   layers_post_mp: 1
-  dim_inner: 88
+  dim_inner: 80
   layer_type: gensconv
   act: gelu
   residual: True
@@ -62,14 +62,14 @@ gnn:
   pre_gnn_type: 'walk'
   gens:
     hop_att: True
-    K: 3
-    gamma: 0.7
+    K: 10
+    gamma: 0.1
     fea_drop: simple
     base_model: gat
     concat: True
     heads: 2
-    edge_dim: 88
-    att_dropout: 0.0
+    edge_dim: 80
+    att_dropout: 0.6
     use_ffN: True
     diff_alpha: False
     norm_type: "batch"

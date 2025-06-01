@@ -17,11 +17,13 @@ This repository provides an **anonymous** code release of our work on *“Graph 
 
 ## Verify GEA
 
-Verify the Graph Elimination Algorithm (GEA) in our paper by running:
+Verify the GEA (Graph Elimination Algorithm) proposed in our paper using a toy example of a five-node graph:
 ```
 # You can manually adjust the number of propagation steps K in the file.
 python models.py
 ```
+
+When ```no_param=True``` is set, for GENs with K>4, the results of multi-round propagation will no longer change.
 
 
 ## Training & Evaluation
